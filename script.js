@@ -289,8 +289,7 @@ $(document).ready(function () {
         'templates/template3.html',
         'templates/template4.html',
         'templates/template5.html',
-        'templates/template6.html'
-    ], function (templates) {
+        'templates/template6.html'    ], function (templates) {
         CertificateApp.templates = templates;
         showStep(1);
     });
