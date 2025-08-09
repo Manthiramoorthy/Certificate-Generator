@@ -22,25 +22,40 @@ $(document).ready(function () {
     // Step rendering
     function showStep(step) {
         CertificateApp.currentStep = step;
-        $('#app-steps').html(renderStep(step));
+        $('#app-steps').html(`
+                    <div class="mb-4">
+                        <div class="progress" style="height: 8px;">
+                            <div class="progress-bar bg-primary" role="progressbar" style="width: ${(step / 5) * 100}%"></div>
+                        </div>
+                        <div class="d-flex justify-content-between mt-2 mb-3">
+                            <span><i class="bi bi-upload"></i> Upload</span>
+                            <span><i class="bi bi-table"></i> Review</span>
+                            <span><i class="bi bi-person-badge"></i> Authority</span>
+                            <span><i class="bi bi-award"></i> Template</span>
+                            <span><i class="bi bi-download"></i> Download</span>
+                        </div>
+                    </div>
+                ` + renderStep(step));
         bindStepEvents(step);
     }
 
     // Step 1: File Upload
     function renderStep1() {
         return `
-        <div class="step-indicator">
-            <div class="d-flex justify-content-end mb-3">
-                <button class="btn btn-primary" id="toStep2" disabled>Next: Review Data</button>
-            </div>
-            <h4>Step 1: Upload CSV File</h4>
-            <div class="mb-3">
-                <label for="csvFileInput" class="form-label">Upload CSV with participant data</label>
-                <input class="form-control" type="file" id="csvFileInput" accept=".csv">
-                <div class="form-text">Columns required: name, date_of_event, event_name, event_type</div>
-            </div>
-            <div id="csvError" class="text-danger mb-2"></div>
-        </div>`;
+                <div class="card shadow-sm border-0 mb-4">
+                    <div class="card-body bg-light">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h4 class="mb-0"><i class="bi bi-upload me-2 text-primary"></i>Step 1: Upload CSV File</h4>
+                            <button class="btn btn-primary" id="toStep2" disabled>Next: Review Data <i class="bi bi-arrow-right"></i></button>
+                        </div>
+                        <div class="mb-3">
+                            <label for="csvFileInput" class="form-label">Upload CSV with participant data</label>
+                            <input class="form-control" type="file" id="csvFileInput" accept=".csv">
+                            <div class="form-text">Columns required: <b>name, date_of_event, event_name, event_type</b></div>
+                        </div>
+                        <div id="csvError" class="text-danger mb-2"></div>
+                    </div>
+                </div>`;
     }
 
     // Step 2: Data Review
@@ -49,84 +64,92 @@ $(document).ready(function () {
             `<tr><td>${i + 1}</td><td>${row.name}</td><td>${row.date_of_event}</td><td>${row.event_name}</td><td>${row.event_type}</td></tr>`
         ).join('');
         return `
-        <div class="step-indicator">
-            <div class="d-flex justify-content-between mb-3">
-                <button class="btn btn-secondary me-2" id="backToStep1">Back</button>
-                <button class="btn btn-primary" id="toStep3">Next: Authority Details</button>
-            </div>
-            <h4>Step 2: Review Participant Data</h4>
-            <div class="table-responsive mb-3">
-                <table class="table table-bordered table-striped">
-                    <thead><tr><th>#</th><th>Name</th><th>Date</th><th>Event</th><th>Type</th></tr></thead>
-                    <tbody>${tableRows}</tbody>
-                </table>
-            </div>
-        </div>`;
+                <div class="card shadow-sm border-0 mb-4">
+                    <div class="card-body bg-light">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <button class="btn btn-secondary me-2" id="backToStep1"><i class="bi bi-arrow-left"></i> Back</button>
+                            <h4 class="mb-0"><i class="bi bi-table me-2 text-primary"></i>Step 2: Review Participant Data</h4>
+                            <button class="btn btn-primary" id="toStep3">Next: Authority Details <i class="bi bi-arrow-right"></i></button>
+                        </div>
+                        <div class="table-responsive mb-3">
+                            <table class="table table-bordered table-striped">
+                                <thead class="table-primary"><tr><th>#</th><th>Name</th><th>Date</th><th>Event</th><th>Type</th></tr></thead>
+                                <tbody>${tableRows}</tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>`;
     }
 
     // Step 3: Template Selection
     function renderStep3() {
         return `
-        <div class="step-indicator">
-            <h4>Step 3: Configure Authority Details</h4>
-            <form id="authorityForm">
-                <div class="d-flex justify-content-between mb-3">
-                    <button class="btn btn-secondary me-2" id="backToStep2" type="button">Back</button>
-                    <button class="btn btn-primary" id="toStep4" type="submit">Next: Select Template</button>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Certificate Title</label>
-                    <input type="text" class="form-control" id="certTitle" value="${CertificateApp.authorityConfig.certTitle}">
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Certificate Subtitle</label>
-                    <input type="text" class="form-control" id="certSubtitle" value="${CertificateApp.authorityConfig.certSubtitle}">
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Certificate Midline</label>
-                    <input type="text" class="form-control" id="certMidline" value="${CertificateApp.authorityConfig.certMidline}">
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Authority Name</label>
-                    <input type="text" class="form-control" id="authorityName" value="${CertificateApp.authorityConfig.name}">
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Authority Role</label>
-                    <input type="text" class="form-control" id="authorityRole" value="${CertificateApp.authorityConfig.role}">
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Company Logo</label>
-                    <input type="file" class="form-control" id="companyLogoInput" accept="image/*">
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Authority Signature</label>
-                    <input type="file" class="form-control" id="signatureInput" accept="image/*">
-                </div>
-            </form>
-        </div>`;
+                <div class="card shadow-sm border-0 mb-4">
+                    <div class="card-body bg-light">
+                        <form id="authorityForm">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <button class="btn btn-secondary me-2" id="backToStep2" type="button"><i class="bi bi-arrow-left"></i> Back</button>
+                                <h4 class="mb-0"><i class="bi bi-person-badge me-2 text-primary"></i>Step 3: Configure Authority Details</h4>
+                                <button class="btn btn-primary" id="toStep4" type="submit">Next: Select Template <i class="bi bi-arrow-right"></i></button>
+                            </div>
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <label class="form-label">Certificate Title</label>
+                                    <input type="text" class="form-control" id="certTitle" value="${CertificateApp.authorityConfig.certTitle}">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Certificate Subtitle</label>
+                                    <input type="text" class="form-control" id="certSubtitle" value="${CertificateApp.authorityConfig.certSubtitle}">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Certificate Midline</label>
+                                    <input type="text" class="form-control" id="certMidline" value="${CertificateApp.authorityConfig.certMidline}">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Authority Name</label>
+                                    <input type="text" class="form-control" id="authorityName" value="${CertificateApp.authorityConfig.name}">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Authority Role</label>
+                                    <input type="text" class="form-control" id="authorityRole" value="${CertificateApp.authorityConfig.role}">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Company Logo</label>
+                                    <input type="file" class="form-control" id="companyLogoInput" accept="image/*">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Authority Signature</label>
+                                    <input type="file" class="form-control" id="signatureInput" accept="image/*">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>`;
     }
 
     // Step 4: Authority Config
     function renderStep4() {
         let cards = CertificateApp.templates.map((tpl, i) =>
             `<div class="col-12 mb-4">
-                <div class="card template-card${CertificateApp.selectedTemplate === i ? ' selected' : ''}" data-tpl="${i}">
-                    <div class="card-body p-2 d-flex justify-content-center align-items-center" style="background: #f8f9fa;">
-                        <div class="certificate-preview">${CertificateManager.renderTemplate(tpl, CertificateApp.participantData[0] || {}, CertificateApp.authorityConfig)}</div>
-                    </div>
-                    <div class="card-footer text-center">Template ${i + 1}</div>
-                </div>
-            </div>`
+                                <div class="card template-card${CertificateApp.selectedTemplate === i ? ' border-primary shadow-lg' : ''}" data-tpl="${i}" style="cursor:pointer;transition:box-shadow .2s;">
+                                        <div class="card-body p-2 d-flex justify-content-center align-items-center bg-white" style="min-height:220px;">
+                                                <div class="certificate-preview">${CertificateManager.renderTemplate(tpl, CertificateApp.participantData[0] || {}, CertificateApp.authorityConfig)}</div>
+                                        </div>
+                                        <div class="card-footer text-center fw-bold">Template ${i + 1} ${CertificateApp.selectedTemplate === i ? '<i class=\'bi bi-check-circle-fill text-success\'></i>' : ''}</div>
+                                </div>
+                        </div>`
         ).join('');
         return `
-        <div class="step-indicator">
-            <div class="d-flex justify-content-between mb-3">
-                <button class="btn btn-secondary me-2" id="backToStep3">Back</button>
-                <button class="btn btn-primary" id="toStep5">Next: Preview & Download</button>
-            </div>
-            <h4>Step 4: Select Certificate Template</h4>
-            <div class="row">${cards}</div>
-        </div>`;
+                <div class="card shadow-sm border-0 mb-4">
+                    <div class="card-body bg-light">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <button class="btn btn-secondary me-2" id="backToStep3"><i class="bi bi-arrow-left"></i> Back</button>
+                            <h4 class="mb-0"><i class="bi bi-award me-2 text-primary"></i>Step 4: Select Certificate Template</h4>
+                            <button class="btn btn-primary" id="toStep5">Next: Preview & Download <i class="bi bi-arrow-right"></i></button>
+                        </div>
+                        <div class="row">${cards}</div>
+                    </div>
+                </div>`;
     }
 
     // Step 5: Preview
@@ -135,26 +158,28 @@ $(document).ready(function () {
         let tpl = CertificateApp.templates[CertificateApp.selectedTemplate];
         let certHtml = CertificateManager.renderTemplate(tpl, participant, CertificateApp.authorityConfig);
         return `
-        <div class="step-indicator">
-            <div class="d-flex justify-content-between mb-3">
-                <button class="btn btn-secondary me-2" id="backToStep4">Back</button>
-                <div>
-                    <button class="btn btn-success me-2" id="downloadSingle">Download Current Certificate (PDF)</button>
-                    <button class="btn btn-primary" id="downloadBulk">Download All as ZIP</button>
-                </div>
-            </div>
-            <h4>Step 5: Preview & Download</h4>
-            <div class="certificate-preview mb-3" id="previewCert">${certHtml}</div>
-            <div class="mb-3">
-                <label>Preview/Download for participant:</label>
-                <select class="form-select w-auto d-inline-block" id="previewParticipant">
-                    ${CertificateApp.participantData.map((p, i) => `<option value="${i}">${p.name}</option>`).join('')}
-                </select>
-            </div>
-            <div class="progress mb-3" style="display:none;">
-                <div class="progress-bar" role="progressbar" style="width: 0%">0%</div>
-            </div>
-        </div>`;
+                <div class="card shadow-sm border-0 mb-4">
+                    <div class="card-body bg-light">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <button class="btn btn-secondary me-2" id="backToStep4"><i class="bi bi-arrow-left"></i> Back</button>
+                            <h4 class="mb-0"><i class="bi bi-download me-2 text-primary"></i>Step 5: Preview & Download</h4>
+                            <div>
+                                <button class="btn btn-success me-2" id="downloadSingle"><i class="bi bi-file-earmark-pdf"></i> Download Current Certificate (PDF)</button>
+                                <button class="btn btn-primary" id="downloadBulk"><i class="bi bi-archive"></i> Download All as ZIP</button>
+                            </div>
+                        </div>
+                        <div class="certificate-preview mb-3" id="previewCert">${certHtml}</div>
+                        <div class="mb-3">
+                            <label>Preview/Download for participant:</label>
+                            <select class="form-select w-auto d-inline-block" id="previewParticipant">
+                                ${CertificateApp.participantData.map((p, i) => `<option value="${i}">${p.name}</option>`).join('')}
+                            </select>
+                        </div>
+                        <div class="progress mb-3" style="display:none;">
+                            <div class="progress-bar" role="progressbar" style="width: 0%">0%</div>
+                        </div>
+                    </div>
+                </div>`;
     }
 
     // Step renderer
@@ -289,8 +314,8 @@ $(document).ready(function () {
         'templates/template3.html',
         'templates/template4.html',
         'templates/template5.html',
-        'templates/template6.html'    ], function (templates) {
-        CertificateApp.templates = templates;
-        showStep(1);
-    });
+        'templates/template6.html'], function (templates) {
+            CertificateApp.templates = templates;
+            showStep(1);
+        });
 });
