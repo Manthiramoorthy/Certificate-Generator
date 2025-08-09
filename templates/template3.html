@@ -1,0 +1,46 @@
+<!-- template3.html: Elegant Theme -->
+<div
+  class="certificate-template elegant p-4"
+  style="
+    font-family: 'Georgia', serif;
+    background: #fffbe7;
+    border: 4px double #bfa14a;
+    border-radius: 18px;
+    width: 900px;
+    height: 600px;
+    position: relative;
+  "
+>
+  <img
+    src="{{company_logo}}"
+    alt="Logo"
+    style="
+      position: absolute;
+      top: 36px;
+      left: 50%;
+      transform: translateX(-50%);
+      height: 56px;
+    "
+  />
+  <div class="text-center" style="margin-top: 80px">
+    <h2 style="font-weight: bold; color: #bfa14a">{{cert_title}}</h2>
+    <p style="font-size: 1.15rem; margin-top: 30px">{{cert_subtitle}}</p>
+    <h1 style="font-size: 2.3rem; font-weight: bold; margin: 22px 0">
+      {{participant_name}}
+    </h1>
+    <p style="font-size: 1.1rem">{{cert_midline}}</p>
+    <h3 style="font-size: 1.2rem; color: #bfa14a">{{event_name}}</h3>
+    <p style="font-size: 1rem">
+      on <b>{{event_date}}</b> as a <b>{{event_type}}</b>
+    </p>
+  </div>
+  <div style="position: absolute; bottom: 48px; right: 64px; text-align: right">
+    <img
+      src="{{authority_signature}}"
+      alt="Signature"
+      style="height: 46px; display: block; margin-bottom: 4px"
+    />
+    <span style="font-weight: bold">{{authority_name}}</span><br />
+    <span style="font-size: 0.95rem">{{authority_role}}</span>
+  </div>
+</div>
