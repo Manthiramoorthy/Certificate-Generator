@@ -7,13 +7,15 @@ $(document).ready(function () {
         participantData: [],
         selectedTemplate: 0,
         authorityConfig: {
-            name: 'Dr. Sarah Wilson',
-            role: 'Program Director',
+            name: 'Head',
+            role: 'InspireX Innovation Unit',
+            companyName: 'Xyzon Innovations Private Limited',
             logoDataUrl: 'assets/images/default-logo.jpeg',
+            partnerLogoDataUrl: 'assets/images/default-partner.png',
             signatureDataUrl: 'assets/images/default-signature.png',
             certTitle: 'Certificate of Appreciation',
             certSubtitle: 'This is proudly presented to',
-            certMidline: 'for outstanding achievement in'
+            certMidline: 'has successfully participated in the webinar on'
         },
         currentStep: 1,
         templates: []
@@ -123,6 +125,10 @@ $(document).ready(function () {
                                 <div class="col-md-4">
                                     <label class="form-label">Company Logo</label>
                                     <input type="file" class="form-control" id="companyLogoInput" accept="image/*" data-bs-toggle="tooltip" title="Upload your organization logo">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Partner Logo</label>
+                                    <input type="file" class="form-control" id="partnerLogoInput" accept="image/*" data-bs-toggle="tooltip" title="Upload registration partner logo">
                                 </div>
                                 <div class="col-md-4">
                                     <label class="form-label">Authority Signature</label>
@@ -246,33 +252,54 @@ $(document).ready(function () {
                 CertificateApp.authorityConfig.role = $('#authorityRole').val();
                 // Handle logo upload
                 const logoFile = $('#companyLogoInput')[0].files[0];
+                const partnerLogoFile = $('#partnerLogoInput')[0].files[0];
                 const sigFile = $('#signatureInput')[0].files[0];
                 const handleNext = () => showStep(4);
+
+                let pendingUploads = 0;
+                let completedUploads = 0;
+
+                const checkComplete = () => {
+                    completedUploads++;
+                    if (completedUploads === pendingUploads) {
+                        handleNext();
+                    }
+                };
+
+                if (logoFile) pendingUploads++;
+                if (partnerLogoFile) pendingUploads++;
+                if (sigFile) pendingUploads++;
+
+                if (pendingUploads === 0) {
+                    handleNext();
+                    return;
+                }
+
                 if (logoFile) {
                     const reader = new FileReader();
                     reader.onload = function (ev) {
                         CertificateApp.authorityConfig.logoDataUrl = ev.target.result;
-                        if (sigFile) {
-                            const sigReader = new FileReader();
-                            sigReader.onload = function (ev2) {
-                                CertificateApp.authorityConfig.signatureDataUrl = ev2.target.result;
-                                handleNext();
-                            };
-                            sigReader.readAsDataURL(sigFile);
-                        } else {
-                            handleNext();
-                        }
+                        checkComplete();
                     };
                     reader.readAsDataURL(logoFile);
-                } else if (sigFile) {
-                    const sigReader = new FileReader();
-                    sigReader.onload = function (ev2) {
-                        CertificateApp.authorityConfig.signatureDataUrl = ev2.target.result;
-                        handleNext();
+                }
+
+                if (partnerLogoFile) {
+                    const reader = new FileReader();
+                    reader.onload = function (ev) {
+                        CertificateApp.authorityConfig.partnerLogoDataUrl = ev.target.result;
+                        checkComplete();
                     };
-                    sigReader.readAsDataURL(sigFile);
-                } else {
-                    handleNext();
+                    reader.readAsDataURL(partnerLogoFile);
+                }
+
+                if (sigFile) {
+                    const reader = new FileReader();
+                    reader.onload = function (ev) {
+                        CertificateApp.authorityConfig.signatureDataUrl = ev.target.result;
+                        checkComplete();
+                    };
+                    reader.readAsDataURL(sigFile);
                 }
             });
         }
@@ -332,9 +359,9 @@ $(document).ready(function () {
         'templates/template3.html',
         'templates/template4.html',
         'templates/template5.html',
-        'templates/template6.html'
+        'templates/template6.html',
     ], function (templates) {
-            CertificateApp.templates = templates;
-            showStep(1);
-        });
+        CertificateApp.templates = templates;
+        showStep(1);
+    });
 });
