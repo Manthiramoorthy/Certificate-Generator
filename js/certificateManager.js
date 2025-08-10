@@ -35,7 +35,7 @@ const CertificateManager = {
         html = html.replace(/\{\{event_type\}\}/g, data.event_type || 'Workshop');
         html = html.replace(/\{\{authority_name\}\}/g, authority.name || 'Dr. Sarah Wilson');
         html = html.replace(/\{\{authority_role\}\}/g, authority.role || 'Program Director');
-        html = html.replace(/\{\{company_logo\}\}/g, authority.logoDataUrl || 'assets/images/default-logo.jpeg');
+        html = html.replace(/\{\{company_logo\}\}/g, authority.logoDataUrl || 'assets/images/default-logo.png');
         html = html.replace(/\{\{partner_logo\}\}/g, authority.partnerLogoDataUrl || authority.partnerLogoDataUrl || 'assets/images/default-partner.png');
         html = html.replace(/\{\{authority_signature\}\}/g, authority.signatureDataUrl || 'assets/images/default-signature.png');
         return html;

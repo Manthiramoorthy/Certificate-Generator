@@ -10,7 +10,7 @@ $(document).ready(function () {
             name: 'Head',
             role: 'InspireX Innovation Unit',
             companyName: 'Xyzon Innovations Private Limited',
-            logoDataUrl: 'assets/images/default-logo.jpeg',
+            logoDataUrl: 'assets/images/default-logo.png',
             partnerLogoDataUrl: 'assets/images/default-partner.png',
             signatureDataUrl: 'assets/images/default-signature.png',
             certTitle: 'Certificate of Appreciation',
@@ -354,10 +354,10 @@ $(document).ready(function () {
 
     // Load templates and start app
     CertificateManager.loadTemplates([
+        'templates/template4.html',
         'templates/template1.html',
         'templates/template2.html',
         'templates/template3.html',
-        'templates/template4.html',
         'templates/template5.html',
         'templates/template6.html',
     ], function (templates) {
